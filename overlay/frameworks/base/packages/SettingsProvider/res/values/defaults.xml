@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="def_dim_screen">false</bool>
+    
+    <!-- maximize the timeout to INT_MAX about 500+ hours -->
+    <integer name="def_screen_off_timeout">2147483647</integer>
+    
+    <integer name="def_sleep_timeout">1800000</integer>
+    <bool name="def_lockscreen_disabled">true</bool>
+    <bool name="def_install_non_market_apps">true</bool>
+    <bool name="def_stay_on_while_plugged_in">true</bool>
+    <string name="def_airplane_mode_radios">bluetooth,wifi</string>
+    <string name="airplane_mode_toggleable_radios">bluetooth,wifi</string>
+    <bool name="def_haptic_feedback">false</bool>
+    <bool name="def_bluetooth_on">false</bool>
+    <!--    <bool name="def_device_provisioned">true</bool>  -->
+    
+    <!-- Allow users to use both the on-screen keyboard, as well as a real
+         keyboard -->
+    <bool name="def_show_ime_with_hard_keyboard">true</bool>    
+    
+</resources>
