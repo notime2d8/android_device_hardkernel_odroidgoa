@@ -1,0 +1,247 @@
+on early-init
+
+    # mount debugfs
+    mount debugfs /sys/kernel/debug /sys/kernel/debug mode=755
+
+    # Change ownership of sw_sync node
+    chown system graphics /sys/kernel/debug/sync/sw_sync
+    chmod 0666 /sys/kernel/debug/sync/sw_sync
+
+    chown root system /dev/kmsg
+    chmod 0620 /dev/kmsg
+    
+on init
+    start watchdogd
+    
+    setprop sys.init_log_level 8
+
+    # For 1GB when swap used about 400M, upgrade the level.
+    setprop ro.lmk.upgrade_pressure 80
+    setprop ro.lmk.downgrade_pressure 95
+    setprop ro.lmk.critical_upgrade true
+
+    # disable cursor blink for fbcon, if no splash screen support
+    write /sys/class/graphics/fbcon/cursor_blink 0
+
+    # Swap in only 1 page at a time
+    write /proc/sys/vm/page-cluster 0
+    write /sys/fs/cgroup/memory.use_hierarchy 1
+
+    # disable transparent huge pages
+    write /sys/kernel/mm/transparent_hugepage/enabled "never"
+
+    # Reduce swappiness to enhance the response to interactive
+    write /proc/sys/vm/swappiness 60
+    write /sys/block/zram0/comp_algorithm lz4
+
+    # reduce schedul time to improve io performance
+    write /sys/kernel/debug/sched_features NO_ENERGY_AWARE
+
+    # Chmod/chown specific sys entry
+    chown system system /sys/class/backlight/backlight/brightness
+    chmod 0660 /sys/class/backlight/backlight/brightness
+
+    chown root root /sys/class/devfreq/dmc/system_status
+    chmod 0666 /sys/class/devfreq/dmc/system_status
+
+on fs
+   # /dev/block/by-name so that we can use the same fstabs everywhere.
+   # symlink /dev/block/platform/ff370000.dwmmc/by-name /dev/block/by-name
+
+    # Start HW service manager early
+    start hwservicemanager
+
+    mount_all /fstab.odroidgoa
+
+on late-fs
+    # Start services for bootanim
+    start surfaceflinger
+    start bootanim
+    start vendor.gralloc-2-0
+    
+    # Wait for hwservicemanager ready since fsck might be triggered in mount_all --late
+    # In such case, init won't responce the property_set from hwservicemanager and then
+    # cause services for bootanim not running.
+    wait_for_prop hwservicemanager.ready true
+    
+    # set RLIMIT_MEMLOCK to 64MB
+    setrlimit 8 67108864 67108864
+
+    # boot time fs tune
+    write /sys/block/mmcblk0/queue/iostats 0
+    write /sys/block/mmcblk0/queue/scheduler bfq
+    write /sys/block/mmcblk0/queue/iosched/slice_idle 0
+    write /sys/block/mmcblk0/queue/read_ahead_kb 2048
+    write /sys/block/mmcblk0/bdi/read_ahead_kb 2048
+    write /sys/block/mmcblk0/queue/nr_requests 256
+
+on post-fs-data
+
+    mkdir /data/media 0770 media_rw media_rw
+    chown media_rw media_rw /data/media
+
+    # Create directory for hostapd
+    mkdir /data/hostapd 0770 system wifi
+
+    # Create /data/time folder for time-services
+    mkdir /data/time/ 0700 system system
+
+    mkdir /data/audio/ 0770 media audio
+
+    # Bluetooth
+    setprop ro.bt.bdaddr_path "system/etc/bt/bd_addr.txt"
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_data_done 1
+
+on zygote-start
+
+    # Create the directories used by the Wireless subsystem
+    mkdir /data/vendor/wifi 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
+
+on boot
+    setprop ro.radio.use-ppp yes
+    
+    insmod /vendor/lib/modules/wlan.ko ifname=wlan0 if2name=p2p0
+
+    chown system system /sys/class/thermal/thermal_zone0/policy
+    chown system system /sys/class/thermal/thermal_zone1/policy
+    chown system system /sys/class/thermal/thermal_zone2/policy
+
+    # Kernel Tweaks from ktweak
+    	write /proc/sys/kernel/perf_cpu_time_max_percent 5
+	write /proc/sys/kernel/printk_devkmsg off
+	write /proc/sys/kernel/randomize_va_space 0
+	write /proc/sys/kernel/sched_autogroup_enabled 1
+	write /proc/sys/kernel/sched_child_runs_first 1
+	write /proc/sys/kernel/sched_downmigrate "40 40"
+	write /proc/sys/kernel/sched_upmigrate "60 60"
+	write /proc/sys/kernel/sched_group_downmigrate 40
+	write /proc/sys/kernel/sched_group_upmigrate 60
+	write /proc/sys/kernel/sched_tunable_scaling 0
+	write /proc/sys/kernel/sched_latency_ns 10000000
+	write /proc/sys/kernel/sched_min_granularity_ns 1000000
+	write /proc/sys/kernel/sched_migration_cost_ns 1000000
+	write /proc/sys/kernel/sched_min_task_util_for_boost 40
+	write /proc/sys/kernel/sched_min_task_util_for_colocation 20
+	write /proc/sys/kernel/sched_nr_migrate 64
+	write /proc/sys/kernel/sched_rt_runtime_us 1000000
+	write /proc/sys/kernel/sched_schedstats 0
+	write /proc/sys/kernel/sched_wakeup_granularity_ns 5000000
+	write /proc/sys/kernel/timer_migration 0
+
+	# Net
+	write /proc/sys/net/ipv4/tcp_ecn 1
+	write /proc/sys/net/ipv4/tcp_fastopen 3
+	write /proc/sys/net/ipv4/tcp_slow_start_after_idle 0
+	write /proc/sys/net/ipv4/tcp_syncookies 0
+	write /proc/sys/net/ipv4/tcp_timestamps 0
+
+    	# VM
+    	write proc/sys/vm/dirty_background_ratio 3
+    	write proc/sys/vm/dirty_ratio 30
+    	write proc/sys/vm/dirty_expire_centisecs 1000
+    	write proc/sys/vm/dirty_writeback_centisecs 0
+   	write proc/sys/vm/extfrag_threshold 750
+    	write proc/sys/vm/oom_dump_tasks 0
+    	write proc/sys/vm/page-cluster 0
+    	write proc/sys/vm/reap_mem_on_sigkill 1
+    	write proc/sys/vm/stat_interval 10
+    	write proc/sys/vm/swappiness 80
+    	write proc/sys/vm/vfs_cache_pressure 200
+    	write proc/sys/vm/watermark_scale_factor 100
+
+	write /sys/kernel/debug/sched_features NO_GENTLE_FAIR_SLEEPER
+	write /sys/kernel/debug/sched_features NEXT_BUDDY
+	write /sys/kernel/debug/sched_features NO_STRICT_SKIP_BUDDY
+	write /sys/kernel/debug/sched_features NO_NONTASK_CAPACITY
+	write /sys/kernel/debug/sched_features TTWU_QUEUE
+
+    # add a cpuset for the camera daemon
+    # we want all the little cores for camera
+    mkdir /dev/cpuset/camera-daemon
+    write /dev/cpuset/camera-daemon/cpus 0
+    write /dev/cpuset/camera-daemon/mems 0
+    chown system system /dev/cpuset/camera-daemon
+    chown system system /dev/cpuset/camera-daemon/tasks
+    chmod 0664 /dev/cpuset/camera-daemon/tasks
+
+    # end boot time fs tune
+    write /sys/block/sda/queue/read_ahead_kb 64
+    write /sys/block/sda/queue/nr_requests 512
+    write /sys/block/sda/queue/iostats 0
+    write /sys/block/mmcblk0/queue/iostats 0
+    write /sys/block/mmcblk0/queue/read_ahead_kb 64
+    write /sys/block/mmcblk0/queue/nr_requests 128
+    write /sys/block/mmcblk0/queue/add_random 0 
+     
+    trigger sys-boot-completed-set
+    
+# We want one opportunity per boot to enable zram, so we
+# use a trigger we fire from the above stanza. If
+# persist.sys.zram_enabled becomes true after boot,
+# we don't want to run swapon_all at that time.
+on sys-boot-completed-set && property:persist.sys.zram_enabled=1
+    swapon_all /fstab.odroidgoa 
+
+on configure-cpuset
+    # update cpusets feature nodes for rk3326 tablet 
+    write /dev/cpuset/foreground/cpus 0-3
+
+    # restricted is for system tasks that are being throttled
+    # due to screen off.    
+    write /dev/cpuset/restricted/cpus 0-1
+    
+    # top-app gets all cpus
+    write /dev/cpuset/top-app/cpus 0-3
+
+    #background contains a small subset (generally one little core)
+    write /dev/cpuset/background/cpus 0
+
+    # add system-background cpuset, a new cpuset for system services
+    # that should not run on larger cores
+    # system-background is for system tasks that should only run on
+    # little cores, not on bigs to be used only by init
+    write /dev/cpuset/system-background/cpus 0-2
+
+on property:sys.boot_completed=1
+   trigger configure-cpuset
+    chown root system /sys/class/devfreq/ff400000.gpu/governor
+    chmod 0664 /sys/class/devfreq/ff400000.gpu/governor
+    chown root system /sys/class/devfreq/ff400000.gpu/min_freq
+    chmod 0664 /sys/class/devfreq/ff400000.gpu/min_freq
+    chown root system /sys/class/devfreq/ff400000.gpu/max_freq
+    chmod 0664 /sys/class/devfreq/ff400000.gpu/max_freq
+
+on property:sys.boot_completed=1
+    # Set default CPU frequency governor
+    # configure governor settings for little cluster
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
+    write /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us 500
+    write /sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us 2000
+
+# Set watchdog timer to 30 seconds and pet it every 10 seconds to get a 20 second margin
+service watchdogd /sbin/watchdogd 10 20
+    class core
+    seclabel u:r:watchdogd:s0
+
+service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
+    -O/data/vendor/wifi/wpa/sockets -puse_p2p_group_interface=1 \
+    -g@android:wpa_wlan0
+    # We will start as root and wpa_supplicant will switch to user wifi
+    # after setting up the capabilities required for WEXT
+    # user wifi
+    # group wifi inet keystore
+    interface android.hardware.wifi.supplicant@1.0::ISupplicant default
+    interface android.hardware.wifi.supplicant@1.1::ISupplicant default
+    interface android.hardware.wifi.supplicant@1.2::ISupplicant default
+    class main
+    socket wpa_wlan0 dgram 660 wifi wifi
+    disabled
+    oneshot    
+    

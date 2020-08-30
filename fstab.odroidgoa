@@ -1,0 +1,10 @@
+#<src>                <mnt_point>  <type>   <mnt_flags and options>               <fs_mgr_flags>
+/dev/block/mmcblk0p2    /system     ext4      ro,barrier=1                      wait,first_stage_mount
+/dev/block/mmcblk0p3  	 /vendor     ext4      ro,barrier=1                      wait,first_stage_mount
+/dev/block/zram0      	   none      swap        defaults                       zramsize=805306368,notrim
+/dev/block/mmcblk0p4    /data       f2fs  noatime,nosuid,nodev,nodiratime,inline_data     wait,check,quota
+/dev/block/mmcblk0p4    /data       ext4  noatime,nosuid,nodev,barrier=1,noauto_da_alloc 	 wait,quota
+#/dev/block/mmcblk0p6    /misc       auto        defaults                      	 defaults
+*/block/mmcblk*          auto       vfat   nosuid,nodev         		        voldmanaged=sdcard1:1
+*/block/sd*              auto       auto         defaults        			voldmanaged=usb:auto
+#/dev/block/platform/dw_mmc/by-name/RECOVERY 
