@@ -1,5 +1,3 @@
-# Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017-2019 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,16 +50,16 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.config.max_starting_bg=4 
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    dalvik.vm.heapstartsize=8m \
-    dalvik.vm.heaptargetutilization=0.75 \
-    dalvik.vm.heapminfree=512k \
-    dalvik.vm.heapmaxfree=8m \
-    dalvik.vm.heapgrowthlimit=192m \
-    dalvik.vm.heapsize=256m
+    	dalvik.vm.heapstartsize=8m \
+    	dalvik.vm.heaptargetutilization=0.75 \
+    	dalvik.vm.heapminfree=512k \
+    	dalvik.vm.heapmaxfree=8m \
+    	dalvik.vm.heapgrowthlimit=192m \
+    	dalvik.vm.heapsize=256m
 
 # Reduces GC frequency of foreground apps by 50%
 PRODUCT_PROPERTY_OVERRIDES += \
-    dalvik.vm.foreground-heap-growth-multiplier=2.0
+    	dalvik.vm.foreground-heap-growth-multiplier=2.0
 
 
 PRODUCT_COPY_FILES += \
@@ -88,12 +86,12 @@ PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.software.cts.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.cts.xml \
 	frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
     	frameworks/native/data/etc/android.hardware.audio.pro.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.pro.xml \
-    frameworks/native/data/etc/android.software.autofill.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.autofill.xml \
-    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
-    frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml \
-    frameworks/native/data/etc/android.hardware.gamepad.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.gamepad.xml \
-    frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
-    frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
+    	frameworks/native/data/etc/android.software.autofill.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.autofill.xml \
+    	frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
+    	frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml \
+    	frameworks/native/data/etc/android.hardware.gamepad.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.gamepad.xml \
+	frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
+    	frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
         frameworks/native/data/etc/android.hardware.faketouch.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.faketouch.xml \
         frameworks/native/data/etc/android.software.backup.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.backup.xml \
         frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
@@ -113,19 +111,18 @@ PRODUCT_COPY_FILES += \
     	$(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/audio_policy_configuration.xml \
     	$(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
     	$(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/audio_policy_configuration.xml \
-        frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_telephony.xml \
-	frameworks/av/media/libeffects/data/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+    frameworks/av/media/libeffects/data/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_c2.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/media_codecs_google_c2.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_c2_audio.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/media_codecs_google_c2_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_c2_video.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/media_codecs_google_c2_video.xml \
-	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video_le.xml \
-    	frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video.xml
+    frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video_le.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video.xml
 
 # Need AppWidget permission to prevent Launcher[2|3] crashing
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.software.app_widgets.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.app_widgets.xml
-
 
 # audio policy configuration
 USE_XML_AUDIO_POLICY_CONF := 1
@@ -170,7 +167,6 @@ PRODUCT_PROPERTY_OVERRIDES += aaudio.mmap_policy=2
 # 2 is AAUDIO_POLICY_AUTO   means try EXCLUSIVE then fallback to SHARED mode.
 # 3 is AAUDIO_POLICY_ALWAYS means only use EXCLUSIVE mode.
 PRODUCT_PROPERTY_OVERRIDES += aaudio.mmap_exclusive_policy=2
-    
 
 # Bluetooth HIDL
 PRODUCT_PACKAGES += \
@@ -372,8 +368,6 @@ PRODUCT_PRODUCT_PROPERTIES += \
 PRODUCT_PACKAGES += \
 	TVbro \
 	TVLauncher \
-	WifiDisplay \
-	TrebuchetGo \
 	LeanbackIME 
 
 PRODUCT_DEXPREOPT_SPEED_APPS += \
@@ -415,12 +409,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 #	logd.logpersistd=logcatd \
 #	logd.logpersistd.size=30 \
 
-#        debug.hwui.use_partial_updates=false \
-#    debug.hwui.use_buffer_age=false \
-#	debug.sf.enable_gl_backpressure=1 \
-# 	debug.hwui.renderer=skiagl \
-#	debug.sf.latch_unsignaled=1 \
-#	 debug.sf.disable_backpressure=1 \
 
 PRODUCT_PROPERTY_OVERRIDES += \
 debug.hwui.use_partial_updates=false \
@@ -465,7 +453,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	persist.sys.zram_enabled=1 \
 	persist.sys.purgeable_assets=1 \
 	ro.kernel.android.checkjni=0 \
-	debug.sf.nobootanimation=1
+	debug.sf.nobootanimation=0
 	
 # Disable stats logging & monitoring
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -479,20 +467,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	persist.service.pcsync.enable=0 \
 	persist.service.lgospd.enable=0 
 
-### WFD
-# Property to enable user to access Google WFD settings.
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.debug.wfd.enable=1
-    
-# Property to choose between virtual/external wfd display
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.sys.wfd.virtual=0
-
-    # HDCP
-PRODUCT_PROPERTY_OVERRIDES += \
-wlan.wfd.hdcp=disable \
-persist.sys.wfd.nohdcp=1
-
 # Disable Scudo outside of eng builds to save RAM.
 PRODUCT_DISABLE_SCUDO := true
 PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
@@ -503,12 +477,3 @@ PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
 # set threshold to filter unused apps
 PRODUCT_PROPERTY_OVERRIDES += \
 pm.dexopt.downgrade_after_inactive_days=10
-
-#PRODUCT_DEFAULT_PROPERTY_OVERRIDES+= \
-
-ifeq ($(PRODUCT_HAVE_RKVPU), true)
-$(call inherit-product-if-exists, vendor/rockchip/common/vpu/vpu.mk)
-endif
-
-$(call inherit-product-if-exists, prebuilts/prebuiltapks/microg.mk)
-
